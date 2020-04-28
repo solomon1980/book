@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:wsc="http://www.mulesoft.org/schema/mule/wsc" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/wsc http://www.mulesoft.org/schema/mule/wsc/current/mule-wsc.xsd">
+	<wsc:config name="Web_Service_Consumer_Config" doc:name="Web Service Consumer Config" doc:id="1915ac2f-75bf-4313-9371-3f03ecbcdbb4" >
+		<wsc:connection wsdlLocation="http://dev.icraftsoft.net:8093/ws/retail.wsdl" service="RetailPortService" port="RetailPortSoap11" address="http://dev.icraftsoft.net:8093/ws" >
+			<wsc:web-service-security actor="http://schemas.xmlsoap.org/soap/actor/next" />
+		</wsc:connection>
+	</wsc:config>
+	<flow name="implementationFlow2" doc:id="77e5892f-bd07-4406-897d-cfbae35cc618" >
+		<ee:transform doc:name="Transform Message" doc:id="734a326d-8d85-4b66-9379-ac99197f03f1" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.craftsoftware.com/retail
+---
+{
+	ns0#CreateProductRequest: {
+		ns0#CreateProduct: {
+			ns0#id: payload.id,
+			ns0#name: payload.name,
+			ns0#barcode: payload.barcode,
+			ns0#rate: payload.rate,
+			ns0#productCategory: payload.productCategory
+		}
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume doc:name="Consume" doc:id="d646ad0f-ca1b-470b-82f5-8c5f9aecc943" config-ref="Web_Service_Consumer_Config" operation="CreateProduct"/>
+		<ee:transform doc:name="Transform Message" doc:id="788bbfe6-44d9-415a-88b9-1b97ab34a387" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://www.craftsoftware.com/retail
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="implementationFlow1" doc:id="87097d9b-89e7-460a-8569-4f253dcf13a1" >
+		<ee:transform doc:name="Transform Message" doc:id="61aeff8d-7ea5-4041-a1d7-7f8f3774d4dc" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.craftsoftware.com/retail
+---
+{
+	ns0#GetProductRequest: {
+		ns0#id: attributes.queryParams.id
+	}
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="GetProduct" doc:name="Consume" doc:id="280d4803-5eae-4a47-85cd-cc21514b8393" config-ref="Web_Service_Consumer_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="981b8276-41aa-4619-8b5f-07988bf22d24" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://www.craftsoftware.com/retail
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="implementationFlow" doc:id="b65e7fd8-1a43-41aa-b8d9-132da22c0278" >
+		<ee:transform doc:name="Transform Message" doc:id="6bdf26c2-8cf5-4e56-9c8a-9d30d8e3223d" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xml
+ns ns0 http://www.craftsoftware.com/retail
+---
+{
+	ns0#GetAllProductsRequest: payload
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<wsc:consume operation="GetAllProducts" doc:name="Consume" doc:id="7918f56b-4a52-49fc-bdba-ada1820e9633" config-ref="Web_Service_Consumer_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="fb034ee7-1527-49c3-bb39-c6abe909e58b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+ns ns0 http://www.craftsoftware.com/retail
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
