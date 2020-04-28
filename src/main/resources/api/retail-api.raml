@@ -1,0 +1,155 @@
+#%RAML 1.0
+baseUri: https://anypoint.mulesoft.com/mocking/api/v1/links/a8a76bc5-167d-471e-8d6f-ae2ef1779241/ # 
+title: Retail API
+version: 1.0
+types:
+  products: !include datatypes/products.raml
+  bills: !include datatypes/Bills.raml
+  prodcutcatagory: !include datatypes/productcatagory.raml
+traits:
+  mycollection: !include trait/statuscode.raml
+  collection: !include trait/create.raml
+  collection1: !include trait/update.raml
+  collection2: !include trait/remove.raml
+/products:
+  get:
+    description: fetches list of all products.
+    responses:
+      200:
+        body:
+          application/json:
+            type: products[]
+            example:
+              !include Example/products.json
+    is:
+      - mycollection:
+                
+  /id:   
+    get:
+       queryParameters:
+        id:
+          type: integer
+          required: true
+       responses:
+        200:
+          body:
+            application/json:
+              example:
+                { "message": "ok"}
+                         
+    put:
+      is:
+        - collection1:
+          
+    delete:
+     is:
+        - collection2:
+                     
+  post:
+   is:
+     collection: 
+              
+/Bills:
+  get:
+    description: fetches all bill data
+    responses:
+      200:
+        body:
+          application/json:
+            type: bills[]
+            example:
+              !include Example/Bills.json  
+    is:
+      - mycollection:
+                                           
+  /id:
+    description: fetches bill of aparticular id
+    get:
+      queryParameters:
+        id:
+          type: integer
+          required: true
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                { "message": "suceessfully"}
+    put:
+     is:
+        - collection1:
+          
+    delete:
+      is:
+        - collection2:
+
+  post:
+   is:
+     collection:
+            
+/productcatagory:
+  get:
+    description: fetcheslist of all productcatagory data
+    responses:
+      200:
+        body:
+          application/json:
+            type: prodcutcatagory[]
+            example:
+              !include Example/productcatagory.json 
+    is:
+      - mycollection:
+                 
+              
+  /id:
+    description: fetcha specificproductcatagory
+    get:
+      queryParameters:
+        id:
+          type: integer
+          required: true
+      responses:
+        200:
+          body:
+            application/json:
+              example:
+                {"message successful"}
+                
+    put:
+      is:
+        - collection1:
+               
+    delete:
+     is:
+        - collection2:
+
+  post:
+    is:
+      collection:
+              
+                            
+    
+
+
+         
+          
+                 
+                  
+      
+
+
+              
+
+  
+    
+      
+  
+          
+
+    
+
+
+                                  
+                    
+                  
+ 
